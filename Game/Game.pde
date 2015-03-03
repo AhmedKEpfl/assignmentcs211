@@ -62,7 +62,7 @@ void draw(){
 
 void keyPressed(){
   if(key == CODED){
-    if(keyCode == UP){
+    /*if(keyCode == UP){
       rotationX -= PI / 180;
       if(rotationX < -PI/ 4){
         rotationX = -PI / 4;
@@ -71,48 +71,29 @@ void keyPressed(){
       rotationX += PI / 180;
       if(rotationX > PI / 4){
         rotationX = PI / 4;
-      }
-    } else if(keyCode == LEFT){
-      rotationZ -= PI / 180;
-      if(rotationZ < -PI/ 4){
-        rotationZ = -PI / 4;
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-      } 
+      }*/
+    if(keyCode == LEFT){
+      rotationY -= PI / 180;
     } else if(keyCode == RIGHT){
-      rotationZ += PI / 180;
-      if(rotationZ > PI/ 4){
-        rotationZ = PI / 4;
-      } 
+      rotationY += PI / 180;
+      
     }
+  }
+}
+
+
+void mouseDragged(){
+  rotationX += (PI / 180) * (mouseY - pmouseY);
+  if(rotationX > PI / 3){
+     rotationX = PI / 3;
+  }else if(rotationX < -PI / 3){
+     rotationX = - PI/3;
+  }
+  
+  rotationZ += (PI / 180) * (mouseX - pmouseX);
+  if(rotationZ > PI / 3){
+     rotationZ = PI / 3;
+  }else if(rotationZ < -PI / 3){
+     rotationZ = - PI/3;
   }
 }
