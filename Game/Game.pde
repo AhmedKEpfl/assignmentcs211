@@ -16,6 +16,7 @@ float accelerationZ = 0;
 float positionX = 0;
 float positionY = 0;
 float positionZ = 0;
+float speed = 1;
 
 void setup() {
   size(500, 500, P3D);
@@ -63,56 +64,30 @@ void draw(){
 void keyPressed(){
   if(key == CODED){
     if(keyCode == UP){
-      rotationX -= PI / 180;
+      rotationX -= PI / 180 * speed;
       if(rotationX < -PI/ 4){
         rotationX = -PI / 4;
       } 
     } else if(keyCode == DOWN){
-      rotationX += PI / 180;
+      rotationX += PI / 180 * speed;
       if(rotationX > PI / 4){
         rotationX = PI / 4;
       }
     } else if(keyCode == LEFT){
-      rotationZ -= PI / 180;
+      rotationZ -= PI / 180 * speed;
       if(rotationZ < -PI/ 4){
-        rotationZ = -PI / 4;
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+        rotationZ = -PI / 4;       
       } 
     } else if(keyCode == RIGHT){
-      rotationZ += PI / 180;
+      rotationZ += PI / 180 * speed;
       if(rotationZ > PI/ 4){
         rotationZ = PI / 4;
       } 
     }
   }
+}
+
+void mouseWheel(MouseEvent event) {
+  float e = event.getCount();
+  speed += e;
 }
