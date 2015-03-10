@@ -1,9 +1,11 @@
-float dimX = 150;
-float dimY = 150;
-float dimZ = 150;
+float heightBox = 150;
+float widthBox = 100;
+float depthBox = 100;
+float scaleHeightBox = 1;
+float rotY = 0;
+float rotX = 0;//PI / 2;
 
-float angleX = 0;
-float angleY = 0;
+
 
 class My2DPoint {
   float x;
@@ -154,36 +156,44 @@ void setup () {
 
 void draw() {
 background(255, 255, 255);
-  translate(width / 2, height / 2, 0);
   My3DPoint eye = new My3DPoint(0, 0, -5000);
   My3DPoint origin = new My3DPoint(0, 0, 0);
-  My3DBox input3DBox = new My3DBox(origin, dimX, dimY, dimZ);
-  //rotated around x
-  float[][] transform1 = rotateXMatrix(angleX);
-  float[][] transform2 = rotateYMatrix(angleY);
-  input3DBox = transformBox(input3DBox, transform1);
-  input3DBox = transformBox(input3DBox, transform2);
-  projectBox(eye, input3DBox).render();
+  My3DBox input3DBox = new My3DBox(origin, widthBox, heightBox * scaleHeightBox, depthBox);
   //rotated and translated
+  float[][] translateOrigin = translationMatrix(-widthBox / 2, - heightBox * scaleHeightBox / 2, -depthBox / 2);
+  float[][] transform1 = translationMatrix(width / 2, height / 2, 0);
+  float[][] transform2 = scaleMatrix(1, scaleHeightBox, 1);
+  float[][] rotationY = rotateYMatrix(rotY);
+  float[][] rotationX = rotateXMatrix(rotX);
+  input3DBox = transformBox(input3DBox, translateOrigin);
   
+  input3DBox = transformBox(input3DBox, transform2);
+  input3DBox = transformBox(input3DBox, rotationX);
+  input3DBox = transformBox(input3DBox, rotationY);
+  input3DBox = transformBox(input3DBox, transform1);
+  projectBox(eye, input3DBox).render();
 }
 
 void mouseDragged(){
-  dimY += mouseY - pmouseY;
+  float quantity = mouseY - pmouseY ;
+  scaleHeightBox -= quantity / 100;
+  if(scaleHeightBox < 0){
+    scaleHeightBox = 0;
+  }
 }
 
 void keyPressed(){
   if(key == CODED){
-    if(keyCode == UP){
-      angleX += PI / 180;
-    }else if(keyCode == DOWN){
-      angleX -= PI / 180;
-    }else if(keyCode == RIGHT){
-      angleY += PI / 180;
-    }else if(keyCode == LEFT){
-      angleY -= PI / 180;
-    }
+    if(keyCode == RIGHT){
+      rotX += PI / 180;
+    } else if(keyCode == LEFT){
+      rotX -= PI / 180;
+    } 
     
+    if(keyCode == UP){
+      rotY += PI / 180;
+    } else if(keyCode == DOWN){
+      rotY -= PI / 180;
+    }
   }
 }
-
