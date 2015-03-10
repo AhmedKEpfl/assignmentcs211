@@ -44,21 +44,24 @@ void keyPressed(){
 
 void mouseWheel(MouseEvent event) {
   float e = event.getCount();
-  speed += e;
-  if(speed < 1){
-    speed = 1;
+  speed += e/100;
+  if(speed < 0.25){
+    speed = 0.25;
+  }
+  if(speed > 2){
+    speed = 2;
   }
 }
 
 void mouseDragged(){
-  rotationX += (PI / 180) * (mouseY - pmouseY);
+  rotationX += (PI / 180) * (mouseY - pmouseY) * speed;
   if(rotationX > PI / 3){
      rotationX = PI / 3;
   }else if(rotationX < -PI / 3){
      rotationX = - PI/3;
   }
   
-  rotationZ += (PI / 180) * (mouseX - pmouseX);
+  rotationZ += (PI / 180) * (mouseX - pmouseX) * speed;
   if(rotationZ > PI / 3){
      rotationZ = PI / 3;
   }else if(rotationZ < -PI / 3){
