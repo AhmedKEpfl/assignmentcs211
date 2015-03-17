@@ -9,62 +9,68 @@ void setup() {
 }
 void draw() {
   background(255);
-  mover.update();
-  mover.checkEdges();
-  mover.display();
+  if (shift) {
+    mover.displayShift();
+  } else {
+    mover.update();
+    mover.checkEdges();
+    mover.checkCylinderCollision();
+    mover.display();
+  }
 }
 
-void keyPressed(){
-  if(key == CODED){
-
-    /*if(keyCode == UP){
-      rotationX -= PI / 180;
-      if(rotationX < -PI/ 4){
-        rotationX = -PI / 4;
-      } 
-    } else if(keyCode == DOWN){
-      rotationX += PI / 180 * speed;
-      if(rotationX > PI / 4){
-        rotationX = PI / 4;
-      }*/
-    } else if(keyCode == LEFT){
-      rotationZ -= PI / 180 * speed;
-      if(rotationZ < -PI/ 4){
-        rotationZ = -PI / 4;       
-      } 
-    } else if(keyCode == RIGHT){
-      rotationZ += PI / 180 * speed;
-      if(rotationZ > PI/ 4){
-        rotationZ = PI / 4;
-       
-      }
+void keyPressed() {
+  if (key == CODED) {
+    if (keyCode == SHIFT) {
+      shift = true;
     }
   }
+}
+
+void keyReleased() {
+  if (key == CODED) {
+    if (keyCode == SHIFT) {
+      shift = false;
+    }
+  }
+}
+
+void mousePressed() {
+  if (shift) {
+    /*PVector p = new PVector(mouseX, 0, mouseY);
+    boolean collisionCyl = cylinderBaseSize + BLOCK_HEIGHT / 2.0 <= p.dist(location);*/
+    if (mouseX <= width / 2 + BLOCK_HEIGHT * SCALE_X / 2 && mouseX >= width / 2 - BLOCK_HEIGHT * SCALE_X / 2 &&
+      mouseY <= height / 2 + BLOCK_HEIGHT * SCALE_Z / 2 && mouseY >= height / 2 - BLOCK_HEIGHT * SCALE_Z / 2 )/*&& !collisionCyl) */{
+      listeCylindres.add(new PVector(mouseX - width / 2, 0, mouseY - height / 2));
+    }
+  }
+}
 
 
 void mouseWheel(MouseEvent event) {
   float e = event.getCount();
   speed += e/100;
-  if(speed < 0.25){
+  if (speed < 0.25) {
     speed = 0.25;
   }
-  if(speed > 2){
+  if (speed > 2) {
     speed = 2;
   }
 }
 
-void mouseDragged(){
+void mouseDragged() {
   rotationX += (PI / 180) * (mouseY - pmouseY) * speed;
-  if(rotationX > PI / 3){
-     rotationX = PI / 3;
-  }else if(rotationX < -PI / 3){
-     rotationX = - PI/3;
+  if (rotationX > PI / 3) {
+    rotationX = PI / 3;
+  } else if (rotationX < -PI / 3) {
+    rotationX = - PI/3;
   }
-  
+
   rotationZ += (PI / 180) * (mouseX - pmouseX) * speed;
-  if(rotationZ > PI / 3){
-     rotationZ = PI / 3;
-  }else if(rotationZ < -PI / 3){
-     rotationZ = - PI/3;
+  if (rotationZ > PI / 3) {
+    rotationZ = PI / 3;
+  } else if (rotationZ < -PI / 3) {
+    rotationZ = - PI/3;
   }
 }
+
