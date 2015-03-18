@@ -12,9 +12,9 @@ void draw() {
   if (shift) {
     mover.displayShift();
   } else {
-    mover.update();
     mover.checkEdges();
     mover.checkCylinderCollision();
+    mover.update();
     mover.display();
   }
 }
