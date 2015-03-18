@@ -37,10 +37,10 @@ void keyReleased() {
 
 void mousePressed() {
   if (shift) {
-    PVector p = new PVector(mouseX - width/2, 0, mouseY - height /2);
+    PVector p = new PVector(mouseX - width / 2, 0, mouseY - height / 2);
     boolean collisionCyl = cylinderBaseSize + BLOCK_HEIGHT / 2.0 >= p.dist(location);
     if (mouseX <= width / 2 + BLOCK_HEIGHT * SCALE_X / 2 && mouseX >= width / 2 - BLOCK_HEIGHT * SCALE_X / 2 &&
-      mouseY <= height / 2 + BLOCK_HEIGHT * SCALE_Z / 2 && mouseY >= height / 2 - BLOCK_HEIGHT * SCALE_Z / 2  && !collisionCyl) {
+      mouseY <= height / 2 + BLOCK_HEIGHT * SCALE_Z / 2 && mouseY >= height / 2 - BLOCK_HEIGHT * SCALE_Z / 2 && !collisionCyl) {
       listeCylindres.add(p);
     }
   }

@@ -1,3 +1,4 @@
+final static float SPHERE_RADIUS = 15;
 final static int BLOCK_HEIGHT = 30; 
 final static int SCALE_X = 10;
 final static int SCALE_Z = 10;
@@ -22,8 +23,6 @@ PShape openCylinder, roofCylinder;
 
 boolean shift = false;
 
-/*This class must handle all the deplacement of the ball,
-it also displays everything else*/
 class Mover {
   //PVector location;
   PVector velocity;
@@ -50,8 +49,9 @@ class Mover {
       openCylinder.vertex(x[i], 0, y[i]);
       openCylinder.vertex(x[i], cylinderHeight, y[i]);
     }
+
+
     openCylinder.endShape();
-    
     roofCylinder = createShape();
     roofCylinder.beginShape(TRIANGLES);
     for (int i = 0; i < x.length - 1; i++) {
@@ -61,8 +61,6 @@ class Mover {
     }
     roofCylinder.endShape();
   }
-  
-  //handles the velocity location and acceleration of the ball
   void update() {
     friction = velocity.get();
     friction.mult(-1);
@@ -78,8 +76,6 @@ class Mover {
 
     location.add(velocity);
   }
-  
-  //displays everything
   void display() {
     lights();
     stroke(50, 50, 50);
@@ -108,8 +104,6 @@ class Mover {
     fill(200, 200, 200);
     sphere(BLOCK_HEIGHT / 2.0);
   }
-  
-  //check collision between the edges of the block and the ball
   void checkEdges() {
     if (location.x >= collisionX - BLOCK_HEIGHT / 2) {
       location.x = collisionX - BLOCK_HEIGHT / 2;
@@ -127,25 +121,25 @@ class Mover {
     }
   }
 
-//change the rotation when entering in shift mode
   void displayShift() {
-    float prevRotationX = rotationX;
-    float prevRotationY = rotationY;
-    float prevRotationZ = rotationZ;
-    rotationX = -PI/2;
-    rotationY = 0;
-    rotationZ = 0;
-    mover.display();
-    rotationX = prevRotationX;
-    rotationY = prevRotationY;
-    rotationZ = prevRotationZ;
+    translate(width / 2, height / 2, 0);
+    rotateX(-PI / 2);
+    pushMatrix();
+    scale(SCALE_X, 1, SCALE_Z);
+
+    box(BLOCK_HEIGHT);
+    popMatrix();
+    for (int i = 0; i < listeCylindres.size (); i++) {
+      addCylinder(listeCylindres.get(i));
+    }
+    translate(location.x, -BLOCK_HEIGHT, location.z);
+    sphere(BLOCK_HEIGHT / 2.0);
   }
 
-//Check the collision between the cylinder and the ball
   void checkCylinderCollision() {
     int cylinderCollision = -1;
     PVector n = new PVector(0, 0, 0);
-    
+    PVector nCopy = new PVector(0, 0, 0);
     
     for (int i = 0; i < listeCylindres.size (); i++) {
       if (cylinderBaseSize + BLOCK_HEIGHT / 2.0 >= listeCylindres.get(i).dist(location)) {
@@ -154,8 +148,15 @@ class Mover {
         n.y = (location.y - (listeCylindres.get(i)).y);
         n.z = (location.z - (listeCylindres.get(i)).z);
         n.normalize();
+        nCopy = n.get();
+       
         n.mult(2* (velocity.dot(n)));
         velocity.sub(n);
+        nCopy.mult(cylinderBaseSize+ BLOCK_HEIGHT / 2.0);
+        location.set(nCopy);
+        location.add(listeCylindres.get(i));
+        
+        //n * r +  + listeCylindre.get(i)
       }
     }
   }
@@ -166,6 +167,8 @@ class Mover {
     translate(0, - 2 * BLOCK_HEIGHT, 0);
     translate(point.x, 0, point.z);
     shape(openCylinder);
+    shape(roofCylinder);
+    translate(0, cylinderHeight, 0);
     shape(roofCylinder);
     popMatrix();
   }
