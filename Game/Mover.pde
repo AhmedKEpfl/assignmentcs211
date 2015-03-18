@@ -122,18 +122,33 @@ class Mover {
   }
 
   void displayShift() {
+    lights();
     translate(width / 2, height / 2, 0);
     rotateX(-PI / 2);
     pushMatrix();
     scale(SCALE_X, 1, SCALE_Z);
-
+    
+    stroke(50, 50, 50);
+    fill(50, 50, 50);
     box(BLOCK_HEIGHT);
     popMatrix();
     for (int i = 0; i < listeCylindres.size (); i++) {
       addCylinder(listeCylindres.get(i));
     }
     translate(location.x, -BLOCK_HEIGHT, location.z);
+    stroke(100, 100, 100);
+    fill(200, 200, 200);
     sphere(BLOCK_HEIGHT / 2.0);
+    /*float rotX = rotationX;
+    float rotY = rotationY;
+    float rotZ = rotationZ;
+    rotationX = - PI / 2.0;
+    rotationY = 0;
+    rotationZ = 0;
+    display();
+    rotationX = rotX;
+    rotationY = rotY;
+    rotationZ = rotZ;*/
   }
 
   void checkCylinderCollision() {

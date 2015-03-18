@@ -49,7 +49,7 @@ void mousePressed() {
 
 void mouseWheel(MouseEvent event) {
   float e = event.getCount();
-  speed += e/100;
+  speed -= e/100;
   if (speed < 0.25) {
     speed = 0.25;
   }
