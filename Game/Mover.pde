@@ -1,3 +1,8 @@
+float score = 0;
+float lastScore = 0;
+final static float COUNTER_BAR_CHART = 5;
+int compteur = 0;
+final static float AMORTISSEMENT_COLLISION = 0.5;
 final static float SPHERE_RADIUS = 15;
 final static int BLOCK_HEIGHT = 30; 
 final static int SCALE_X = 10;
@@ -7,6 +12,7 @@ float collisionX = BLOCK_HEIGHT * SCALE_X / 2.0;
 float collisionZ = BLOCK_HEIGHT * SCALE_Z / 2.0;
 
 float cylinderBaseSize = 20;
+
 float cylinderHeight = 50;
 int cylinderResolution = 40;
 
@@ -17,22 +23,24 @@ float mu = 0.01;
 float frictionMagnitude = normalForce * mu;
 PVector friction;
 PVector location;
+PVector velocity;
+PVector acceleration;
 
 ArrayList<PVector> listeCylindres;
+ArrayList<Integer> barChartColumns;
 PShape openCylinder, roofCylinder;
 
 boolean shift = false;
 
 class Mover {
   //PVector location;
-  PVector velocity;
-  PVector acceleration;
   Mover() {
     location = new PVector(0, 0, 0);
     velocity = new PVector(0, 0, 0);
     acceleration = new PVector(0, 0, 0);
     listeCylindres = new ArrayList<PVector>();
-
+    barChartColumns = new ArrayList<Integer>();
+    
     float angle;
     float[] x = new float[cylinderResolution + 1];
     float[] y = new float[cylinderResolution + 1];
@@ -66,7 +74,11 @@ class Mover {
     friction.mult(-1);
     friction.normalize();
     friction.mult(frictionMagnitude);
-
+    if(compteur > COUNTER_BAR_CHART){
+      barChartColumns.add((int)score);
+      compteur = -1;
+    }
+    compteur++;
     acceleration.x = sin(rotationZ) * gravityConstant;
     acceleration.z = -sin(rotationX) * gravityConstant;
 
@@ -78,6 +90,7 @@ class Mover {
   }
   void display() {
     lights();
+    pushMatrix();
     stroke(50, 50, 50);
     fill(50, 50, 50);
     background(200, 200, 200);
@@ -103,31 +116,52 @@ class Mover {
     stroke(100, 100, 100);
     fill(200, 200, 200);
     sphere(BLOCK_HEIGHT / 2.0);
+    popMatrix();
+    drawDataVisualization();
+    image(dataVisualization, 0, height - dataVisualization.height);
   }
   void checkEdges() {
     if (location.x >= collisionX - BLOCK_HEIGHT / 2) {
+      if (velocity.x > 0.1) {
+        score -= velocity.mag();
+        lastScore = -velocity.mag();
+      }
       location.x = collisionX - BLOCK_HEIGHT / 2;
-      velocity.x = -velocity.x / 2.0;
+
+      velocity.x = -velocity.x * AMORTISSEMENT_COLLISION;
     } else if (location.x <= -collisionX + BLOCK_HEIGHT / 2) {
+      if (velocity.x < -0.1) {
+        score -= velocity.mag();
+        lastScore = -velocity.mag();
+      }
       location.x = -collisionX + BLOCK_HEIGHT / 2;
-      velocity.x = -velocity.x / 2.0;
+      velocity.x = -velocity.x * AMORTISSEMENT_COLLISION;
     }
     if (location.z >= collisionZ - BLOCK_HEIGHT / 2) {
+      if (velocity.z > 0.1) {
+        score -= velocity.mag();
+        lastScore = -velocity.mag();
+      }
       location.z = collisionZ - BLOCK_HEIGHT / 2;
-      velocity.z = -velocity.z / 2.0;
+      velocity.z = -velocity.z * AMORTISSEMENT_COLLISION;
     } else if (location.z <= -collisionZ + BLOCK_HEIGHT / 2) {
+      if (velocity.z < -0.1) {
+        score -= velocity.mag();
+        lastScore = -velocity.mag();
+      }
       location.z = -collisionZ + BLOCK_HEIGHT / 2;
-      velocity.z = -velocity.z / 2.0;
+      velocity.z = -velocity.z * AMORTISSEMENT_COLLISION;
     }
   }
 
   void displayShift() {
     lights();
+
     translate(width / 2, height / 2, 0);
     rotateX(-PI / 2);
     pushMatrix();
     scale(SCALE_X, 1, SCALE_Z);
-    
+
     stroke(50, 50, 50);
     fill(50, 50, 50);
     box(BLOCK_HEIGHT);
@@ -139,52 +173,56 @@ class Mover {
     stroke(100, 100, 100);
     fill(200, 200, 200);
     sphere(BLOCK_HEIGHT / 2.0);
+
+
     /*float rotX = rotationX;
-    float rotY = rotationY;
-    float rotZ = rotationZ;
-    rotationX = - PI / 2.0;
-    rotationY = 0;
-    rotationZ = 0;
-    display();
-    rotationX = rotX;
-    rotationY = rotY;
-    rotationZ = rotZ;*/
+     float rotY = rotationY;
+     float rotZ = rotationZ;
+     rotationX = - PI / 2.0;
+     rotationY = 0;
+     rotationZ = 0;
+     display();
+     rotationX = rotX;
+     rotationY = rotY;
+     rotationZ = rotZ;*/
   }
 
   void checkCylinderCollision() {
     int cylinderCollision = -1;
     PVector n = new PVector(0, 0, 0);
     PVector nCopy = new PVector(0, 0, 0);
-    
+
     for (int i = 0; i < listeCylindres.size (); i++) {
       if (cylinderBaseSize + BLOCK_HEIGHT / 2.0 >= listeCylindres.get(i).dist(location)) {
+        score += velocity.mag();
+        lastScore = velocity.mag();
         cylinderCollision = i;
         n.x = (location.x - (listeCylindres.get(i)).x);
         n.y = (location.y - (listeCylindres.get(i)).y);
         n.z = (location.z - (listeCylindres.get(i)).z);
         n.normalize();
         nCopy = n.get();
-       
+
         n.mult(2* (velocity.dot(n)));
         velocity.sub(n);
         nCopy.mult(cylinderBaseSize+ BLOCK_HEIGHT / 2.0);
         location.set(nCopy);
         location.add(listeCylindres.get(i));
-        
+
         //n * r +  + listeCylindre.get(i)
       }
     }
   }
 }
 
-  void addCylinder(PVector point) {
-    pushMatrix();
-    translate(0, - 2 * BLOCK_HEIGHT, 0);
-    translate(point.x, 0, point.z);
-    shape(openCylinder);
-    shape(roofCylinder);
-    translate(0, cylinderHeight, 0);
-    shape(roofCylinder);
-    popMatrix();
-  }
+void addCylinder(PVector point) {
+  pushMatrix();
+  translate(0, - 2 * BLOCK_HEIGHT, 0);
+  translate(point.x, 0, point.z);
+  shape(openCylinder);
+  shape(roofCylinder);
+  translate(0, cylinderHeight, 0);
+  shape(roofCylinder);
+  popMatrix();
+}
 
