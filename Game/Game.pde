@@ -1,8 +1,13 @@
+int HEIGHT_WINDOW = 600;
+int WIDTH_WINDOW = 600;
 float rotationX = 0;
 float rotationY = 0;
 float rotationZ = 0;
 final static float FACTOR_TW = 4.0;
 float rectBarChart = 4;
+float rectBarChartWidth = 4;
+float tVWidth = BLOCK_HEIGHT * SCALE_X / FACTOR_TW;
+float tVHeight = BLOCK_HEIGHT * SCALE_Z / FACTOR_TW;
 
 //Debut
 
@@ -11,10 +16,11 @@ PGraphics topView;
 
 Mover mover;
 void setup() {
-  size(600, 600, P3D);
+  size(WIDTH_WINDOW, HEIGHT_WINDOW, P3D);
   mover = new Mover();
   dataVisualization = createGraphics(width, 100, P2D);
   topView = createGraphics((int)(BLOCK_HEIGHT * SCALE_X / FACTOR_TW), (int)(BLOCK_HEIGHT * SCALE_Z / FACTOR_TW), P2D);
+  
 }
 void draw() {
   background(255);
@@ -32,6 +38,7 @@ void drawDataVisualization() {
   dataVisualization.beginDraw();
   dataVisualization.background(255, 204, 153);
   drawTopView();
+  
   dataVisualization.endDraw();
 }
 
@@ -41,8 +48,6 @@ void drawTopView() {
   dataVisualization.pushMatrix();
   dataVisualization.fill(0, 0, 204);
   dataVisualization.stroke(0, 0, 204);
-  float tVWidth = BLOCK_HEIGHT * SCALE_X / FACTOR_TW;
-  float tVHeight = BLOCK_HEIGHT * SCALE_Z / FACTOR_TW;
   dataVisualization.rect(0, 0, tVWidth, tVHeight);
   dataVisualization.translate(tVWidth / 2.0, tVHeight / 2.0);
   dataVisualization.fill(255, 204, 153);
@@ -79,7 +84,7 @@ void drawTopView() {
   dataVisualization.stroke(255, 255, 255);
   dataVisualization.fill(0, 0, 200);
   dataVisualization.translate(4, heightBarChart - rectBarChart);
-  if(barChartColumns.size() > widthBarChart / rectBarChart - 1){
+  if(barChartColumns.size() > widthBarChart / rectBarChartWidth - 1){
     for(int i = 0; i < barChartColumns.size() - 1; i++){
       barChartColumns.set(i, barChartColumns.get(i + 1));
     }
@@ -89,14 +94,15 @@ void drawTopView() {
   for(int i = 0; i < barChartColumns.size(); i++){
     dataVisualization.pushMatrix();
     for(int j = 0; j < barChartColumns.get(i) && j < heightBarChart / rectBarChart - 1; j++){
-      dataVisualization.rect(0, 0, rectBarChart, rectBarChart);
+      dataVisualization.rect(0, 0, rectBarChartWidth, rectBarChart);
       dataVisualization.translate(0, -rectBarChart);
     }
     dataVisualization.popMatrix();
-    dataVisualization.translate(rectBarChart, 0);  
+    dataVisualization.translate(rectBarChartWidth, 0);  
   }
   
   dataVisualization.popMatrix();
+  
   popMatrix();
 }
 

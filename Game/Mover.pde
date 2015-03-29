@@ -10,6 +10,9 @@ final static int SCALE_Z = 10;
 final static float gravityConstant = 0.1;
 float collisionX = BLOCK_HEIGHT * SCALE_X / 2.0;
 float collisionZ = BLOCK_HEIGHT * SCALE_Z / 2.0;
+float positionScrollX = 2 * tVWidth + 50;
+float positionScrollY = HEIGHT_WINDOW - 20;
+
 
 float cylinderBaseSize = 20;
 
@@ -40,6 +43,7 @@ class Mover {
     acceleration = new PVector(0, 0, 0);
     listeCylindres = new ArrayList<PVector>();
     barChartColumns = new ArrayList<Integer>();
+    hs = new HScrollbar(positionScrollX, positionScrollY, 200, 15);
     
     float angle;
     float[] x = new float[cylinderResolution + 1];
@@ -87,6 +91,7 @@ class Mover {
     velocity.add(acceleration);
 
     location.add(velocity);
+    rectBarChartWidth = 4 * hs.getPos();
   }
   void display() {
     lights();
@@ -119,6 +124,8 @@ class Mover {
     popMatrix();
     drawDataVisualization();
     image(dataVisualization, 0, height - dataVisualization.height);
+    hs.update();
+    hs.display();
   }
   void checkEdges() {
     if (location.x >= collisionX - BLOCK_HEIGHT / 2) {
