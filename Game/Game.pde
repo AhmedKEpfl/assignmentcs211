@@ -20,7 +20,6 @@ void setup() {
   mover = new Mover();
   dataVisualization = createGraphics(width, 100, P2D);
   topView = createGraphics((int)(BLOCK_HEIGHT * SCALE_X / FACTOR_TW), (int)(BLOCK_HEIGHT * SCALE_Z / FACTOR_TW), P2D);
-  
 }
 void draw() {
   background(255);
@@ -38,7 +37,7 @@ void drawDataVisualization() {
   dataVisualization.beginDraw();
   dataVisualization.background(255, 204, 153);
   drawTopView();
-  
+
   dataVisualization.endDraw();
 }
 
@@ -79,30 +78,30 @@ void drawTopView() {
   float heightBarChart = tVHeight * 0.7;
   float widthBarChart = width - 2*tVWidth - 20;
   dataVisualization.rect(0, 0, widthBarChart, heightBarChart);
-  
+
   dataVisualization.pushMatrix();
   dataVisualization.stroke(255, 255, 255);
   dataVisualization.fill(0, 0, 200);
   dataVisualization.translate(4, heightBarChart - rectBarChart);
-  if(barChartColumns.size() > widthBarChart / rectBarChartWidth - 1){
-    for(int i = 0; i < barChartColumns.size() - 1; i++){
+  if (barChartColumns.size() > widthBarChart / rectBarChartWidth - 1) {
+    for (int i = 0; i < barChartColumns.size () - 1; i++) {
       barChartColumns.set(i, barChartColumns.get(i + 1));
     }
     barChartColumns.remove(barChartColumns.size() - 1);
   }
-  
-  for(int i = 0; i < barChartColumns.size(); i++){
+
+  for (int i = 0; i < barChartColumns.size (); i++) {
     dataVisualization.pushMatrix();
-    for(int j = 0; j < barChartColumns.get(i) && j < heightBarChart / rectBarChart - 1; j++){
+    for (int j = 0; j < barChartColumns.get (i) && j < heightBarChart / rectBarChart - 1; j++) {
       dataVisualization.rect(0, 0, rectBarChartWidth, rectBarChart);
       dataVisualization.translate(0, -rectBarChart);
     }
     dataVisualization.popMatrix();
-    dataVisualization.translate(rectBarChartWidth, 0);  
+    dataVisualization.translate(rectBarChartWidth, 0);
   }
-  
+
   dataVisualization.popMatrix();
-  
+
   popMatrix();
 }
 
@@ -146,18 +145,20 @@ void mouseWheel(MouseEvent event) {
 }
 
 void mouseDragged() {
-  rotationX += (PI / 180) * (mouseY - pmouseY) * speed;
-  if (rotationX > PI / 3) {
-    rotationX = PI / 3;
-  } else if (rotationX < -PI / 3) {
-    rotationX = - PI/3;
-  }
+  if (mouseY <= height - dataVisualization.height) {
+    rotationX += (PI / 180) * (mouseY - pmouseY) * speed;
+    if (rotationX > PI / 3) {
+      rotationX = PI / 3;
+    } else if (rotationX < -PI / 3) {
+      rotationX = - PI/3;
+    }
 
-  rotationZ += (PI / 180) * (mouseX - pmouseX) * speed;
-  if (rotationZ > PI / 3) {
-    rotationZ = PI / 3;
-  } else if (rotationZ < -PI / 3) {
-    rotationZ = - PI/3;
+    rotationZ += (PI / 180) * (mouseX - pmouseX) * speed;
+    if (rotationZ > PI / 3) {
+      rotationZ = PI / 3;
+    } else if (rotationZ < -PI / 3) {
+      rotationZ = - PI/3;
+    }
   }
 }
 
