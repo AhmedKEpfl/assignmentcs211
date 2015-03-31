@@ -1,0 +1,22 @@
+# Blender MTL File: 'monArbre.blend'
+# Material Count: 2
+
+newmtl Feuillage
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.017228 0.240000 0.020068
+Ks 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 1
+map_Kd Feuillage Diffuse Color.png
+
+newmtl Tron
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.320000 0.080000 0.040000
+Ks 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 1
+map_Kd Tron Diffuse Color.png
