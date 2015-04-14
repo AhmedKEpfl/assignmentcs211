@@ -4,7 +4,7 @@ void setup() {
   size(500, 500, P3D);
   // The files "simpleTree.obj" and "simpleTree.mtl" must be in the data folder
   // of the current sketch to load successfully, download them from Moodle
-  tree = loadShape("simpleTree.obj");
+  tree = loadShape("monArbre.obj");
   tree.scale(40);
 }
 void draw() {

@@ -91,7 +91,7 @@ class Mover {
     velocity.add(acceleration);
 
     location.add(velocity);
-    rectBarChartWidth = 4 * hs.getPos();
+    rectBarChartWidth = RECT_BAR_CHART_WIDTH_INITIAL * hs.getPos();
   }
   void display() {
     lights();

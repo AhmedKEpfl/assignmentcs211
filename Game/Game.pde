@@ -4,7 +4,8 @@ float rotationX = 0;
 float rotationY = 0;
 float rotationZ = 0;
 final static float FACTOR_TW = 4.0;
-float rectBarChart = 4;
+final static float RECT_BAR_CHART_WIDTH_INITIAL = 4;
+float rectBarChartHeight = 4;
 float rectBarChartWidth = 4;
 float tVWidth = BLOCK_HEIGHT * SCALE_X / FACTOR_TW;
 float tVHeight = BLOCK_HEIGHT * SCALE_Z / FACTOR_TW;
@@ -82,19 +83,25 @@ void drawTopView() {
   dataVisualization.pushMatrix();
   dataVisualization.stroke(255, 255, 255);
   dataVisualization.fill(0, 0, 200);
-  dataVisualization.translate(4, heightBarChart - rectBarChart);
+  dataVisualization.translate(4, heightBarChart - rectBarChartHeight);
   if (barChartColumns.size() > widthBarChart / rectBarChartWidth - 1) {
     for (int i = 0; i < barChartColumns.size () - 1; i++) {
       barChartColumns.set(i, barChartColumns.get(i + 1));
     }
     barChartColumns.remove(barChartColumns.size() - 1);
   }
-
+  
+  if(rectBarChartHeight * score > heightBarChart){
+    rectBarChartHeight /= 2;
+  } else if (rectBarChartHeight * score < heightBarChart / 4 ){
+    rectBarChartHeight *= 2;
+  }
+  
   for (int i = 0; i < barChartColumns.size (); i++) {
     dataVisualization.pushMatrix();
-    for (int j = 0; j < barChartColumns.get (i) && j < heightBarChart / rectBarChart - 1; j++) {
-      dataVisualization.rect(0, 0, rectBarChartWidth, rectBarChart);
-      dataVisualization.translate(0, -rectBarChart);
+    for (int j = 0; j < barChartColumns.get (i) && j < heightBarChart / rectBarChartHeight - 1; j++) {
+      dataVisualization.rect(0, 0, rectBarChartWidth, rectBarChartHeight);
+      dataVisualization.translate(0, -rectBarChartHeight);
     }
     dataVisualization.popMatrix();
     dataVisualization.translate(rectBarChartWidth, 0);
