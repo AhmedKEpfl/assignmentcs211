@@ -38,3 +38,12 @@ org.eclipse.core.internal.resources.ResourceException: Resource already exists o
 	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
 !SUBENTRY 1 org.eclipse.core.resources 4 272 2015-04-21 10:37:29.542
 !MESSAGE Resource already exists on disk: '/cs211/bin/.project'.
+!SESSION 2015-04-28 08:26:20.216 -----------------------------------------------
+eclipse.buildId=debbuild
+java.version=1.8.0_40
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86, WS=gtk, NL=en_US
+Command-line arguments:  -os linux -ws gtk -arch x86
+
+!ENTRY org.eclipse.core.resources 2 10035 2015-04-28 08:26:26.981
+!MESSAGE The workspace exited with unsaved changes in the previous session; refreshing workspace to recover changes.
