@@ -30,8 +30,8 @@ public class ImageProcessing extends PApplet {
 	public void draw() {
 
 		background(color(0,0,0));
-		//intermediate1 = convolute(img);
-		//changeImageMinBright(intermediate1, result);
+		intermediate1 = convolute(img);
+		changeImageMinBright(intermediate1, result);
 		changeImageHueFixed(img, intermediate1);
 		result = sobel(intermediate1);
 		image(result, 0, 0);
