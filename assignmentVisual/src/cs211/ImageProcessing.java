@@ -13,17 +13,19 @@ import processing.core.PVector;
 public class ImageProcessing extends PApplet {
 	HScrollbar thresholdBarHue, thresholdBarSaturation;
 	PImage img, result;
-
+	int WIDTH_IMG = 800;
+	int HEIGHT = 600;
+	int WIDHT_HOUGH = 600;
+	
 	public void setup() {
-		size(800, 600);
+		size(2 * WIDTH_IMG + WIDHT_HOUGH, HEIGHT);
 		// thresholdBarHue = new HScrollbar(this, 0, 580, 800, 20);
 		// thresholdBarSaturation = new HScrollbar(this, 0, 560, 800, 20);
 		// ...
 
-		img = loadImage("C:/Users/Ahmed/Documents/epfl/epfl/concurrency/labs/assignmentVisual/src/board4.jpg");
+		img = loadImage("board1.jpg");
 
 		result = new PImage(img.width, img.height);
-		// image(img, 0, 0);
 
 		result = sobel(gaussianBlur(detectGreen(img), 99.0f));
 		image(result, 0, 0);
@@ -81,6 +83,7 @@ public class ImageProcessing extends PApplet {
 
 		getIntersections(lines);
 		// result.updatePixels();
+		
 		noLoop(); // you must comment out noLoop()!
 	}
 
