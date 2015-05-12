@@ -12,28 +12,32 @@ import processing.core.PVector;
 
 public class ImageProcessing extends PApplet {
 	HScrollbar thresholdBarHue, thresholdBarSaturation;
-	PImage img, result;
+	PImage img, houghImg, result;
+	final static int HEIGHT = 320, WIDTH_IMG = 480, WIDTH_HOUGH = 320;
 
 	public void setup() {
-		size(800, 600);
+		size(2*WIDTH_IMG + WIDTH_HOUGH, HEIGHT);
 		// thresholdBarHue = new HScrollbar(this, 0, 580, 800, 20);
 		// thresholdBarSaturation = new HScrollbar(this, 0, 560, 800, 20);
 		// ...
 
-		img = loadImage("C:/Users/Ahmed/Documents/epfl/epfl/concurrency/labs/assignmentVisual/src/board4.jpg");
-
+		img = loadImage("C:/Users/Ahmed/Documents/epfl/epfl/concurrency/labs/assignmentVisual/src/board3.jpg");
+		img.resize(WIDTH_IMG, HEIGHT);
 		result = new PImage(img.width, img.height);
-		// image(img, 0, 0);
+		
 
 		result = sobel(gaussianBlur(detectGreen(img), 99.0f));
-		image(result, 0, 0);
+		
+		
 		/*
 		 * PImage afterSobel = sobel(result); image(afterSobel, 0, 0);
 		 */
 		ArrayList<PVector> lines = hough(result);
+		
+		
 
 		QuadGraph quadGraph = new QuadGraph();
-		quadGraph.build(lines, width, height);
+		quadGraph.build(lines, result.width, result.height);
 		List<int[]> quads = quadGraph.findCycles();
 		List<int[]> afterFilterQuads = new ArrayList<int[]>();
 		for(int[] quad: quads){
@@ -47,7 +51,7 @@ public class ImageProcessing extends PApplet {
 			PVector c34 = intersection(l3, l4);
 			PVector c41 = intersection(l4, l1);
 			System.out.println("Size of quads before filter : " + quads.size());
-			if (QuadGraph.isConvex(c12, c23, c34, c41) && QuadGraph.validArea(c12, c23, c34, c41, 800*600, 0) &&
+			if (QuadGraph.isConvex(c12, c23, c34, c41) && QuadGraph.validArea(c12, c23, c34, c41, result.width*result.height, 0) &&
 					QuadGraph.nonFlatQuad(c12, c23, c34, c41)) {
 				afterFilterQuads.add(quad);
 			}
@@ -80,27 +84,17 @@ public class ImageProcessing extends PApplet {
 		}
 
 		getIntersections(lines);
+		image(img, 0, 0);
+		image(houghImg, WIDTH_IMG, 0);
+		image(result, WIDTH_IMG + WIDTH_HOUGH, 0);
 		// result.updatePixels();
 		noLoop(); // you must comment out noLoop()!
 	}
 
-	public void draw() {
-		// background(color(0, 0, 0));
-		// ...
-		/*
-		 * PImage intermediate1 = convolute(img); PImage intermediate2 =
-		 * gaussianBlur(intermediate1, 10000 * thresholdBarHue.getPos());
-		 */
-		/*
-		 * image(img, 0, 0); result = sobel(detectGreen(img)); hough(result);
-		 * result.updatePixels();
-		 */
-
-		/*
-		 * thresholdBarHue.display(); thresholdBarHue.update();
-		 * thresholdBarSaturation.display(); thresholdBarSaturation.update();
-		 */
-	}
+	/*public void draw(){
+		image(img, 0, 0);
+		image(result, WIDTH_IMG, 0);
+	}*/
 
 	public void changeImageMaxBright(PImage src, PImage dst) {
 		dst.loadPixels();
@@ -185,6 +179,14 @@ public class ImageProcessing extends PApplet {
 				}
 			}
 		}
+		
+		houghImg = createImage(rDim + 2, phiDim + 2, ALPHA);
+		for (int i = 0; i < accumulator.length; i++) {
+		houghImg.pixels[i] = color(min(255, accumulator[i]));
+		}
+		houghImg.updatePixels();
+		houghImg.resize(WIDTH_HOUGH, HEIGHT);
+		
 
 		/*
 		 * PImage houghImg = createImage(rDim + 2, phiDim + 2, ALPHA); for (int
@@ -489,14 +491,14 @@ public class ImageProcessing extends PApplet {
 		PImage result = new PImage(img.width, img.height);
 		for (int i = 0; i < img.height; i++) {
 			for (int j = 0; j < img.width; j++) {
-				if (hue(img.pixels[i * width + j]) > 100
-						&& hue(img.pixels[i * width + j]) < 138
-						&& saturation(img.pixels[i * width + j]) > 50
-						&& brightness(img.pixels[i * width + j]) > 10
-						&& brightness(img.pixels[i * width + j]) < 245) {
-					result.pixels[i * width + j] = img.pixels[i * width + j];
+				if (hue(img.pixels[i * img.width + j]) > 100
+						&& hue(img.pixels[i * img.width + j]) < 138
+						&& saturation(img.pixels[i * img.width + j]) > 50
+						&& brightness(img.pixels[i * img.width + j]) > 10
+						&& brightness(img.pixels[i * img.width + j]) < 245) {
+					result.pixels[i * img.width + j] = img.pixels[i * img.width + j];
 				} else {
-					result.pixels[i * width + j] = color(0);
+					result.pixels[i * img.width + j] = color(0);
 				}
 			}
 		}
