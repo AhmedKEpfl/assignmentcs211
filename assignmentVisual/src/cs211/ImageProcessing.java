@@ -13,21 +13,23 @@ import processing.core.PVector;
 public class ImageProcessing extends PApplet {
 	HScrollbar thresholdBarHue, thresholdBarSaturation;
 	PImage img, houghImg, result;
-	final static int HEIGHT = 320, WIDTH_IMG = 480, WIDTH_HOUGH = 320;
+	final static int HEIGHT = 600, WIDTH_IMG = 800, WIDTH_HOUGH = 600;
 
 	public void setup() {
-		size(2*WIDTH_IMG + WIDTH_HOUGH, HEIGHT);
+		size((2 * WIDTH_IMG + WIDTH_HOUGH)/2, HEIGHT / 2);
 		// thresholdBarHue = new HScrollbar(this, 0, 580, 800, 20);
 		// thresholdBarSaturation = new HScrollbar(this, 0, 560, 800, 20);
 		// ...
-
-		img = loadImage("C:/Users/Ahmed/Documents/epfl/epfl/concurrency/labs/assignmentVisual/src/board3.jpg");
-		img.resize(WIDTH_IMG, HEIGHT);
+		
+		//A revoir avant d'envoyer
+		img = loadImage("C:/Users/Ahmed/Documents/epfl/epfl/concurrency/labs/assignmentVisual/src/board4.jpg");
+		
 		result = new PImage(img.width, img.height);
 		
 
 		result = sobel(gaussianBlur(detectGreen(img), 99.0f));
-		
+		scale(0.5f, 0.5f);
+		image(img, 0, 0);
 		
 		/*
 		 * PImage afterSobel = sobel(result); image(afterSobel, 0, 0);
@@ -51,7 +53,7 @@ public class ImageProcessing extends PApplet {
 			PVector c34 = intersection(l3, l4);
 			PVector c41 = intersection(l4, l1);
 			System.out.println("Size of quads before filter : " + quads.size());
-			if (QuadGraph.isConvex(c12, c23, c34, c41) && QuadGraph.validArea(c12, c23, c34, c41, result.width*result.height, 0) &&
+			if (QuadGraph.isConvex(c12, c23, c34, c41) && QuadGraph.validArea(c12, c23, c34, c41, 2*result.width*result.height, 0) &&
 					QuadGraph.nonFlatQuad(c12, c23, c34, c41)) {
 				afterFilterQuads.add(quad);
 			}
@@ -84,9 +86,12 @@ public class ImageProcessing extends PApplet {
 		}
 
 		getIntersections(lines);
-		image(img, 0, 0);
+		
 		image(houghImg, WIDTH_IMG, 0);
 		image(result, WIDTH_IMG + WIDTH_HOUGH, 0);
+		
+		
+		
 		// result.updatePixels();
 		noLoop(); // you must comment out noLoop()!
 	}
