@@ -22,7 +22,7 @@ public class ImageProcessing extends PApplet {
 		// ...
 
 		// A revoir avant d'envoyer
-		img = loadImage("board2.jpg");
+		img = loadImage("C:/Users/Ahmed/Documents/epfl/epfl/concurrency/labs/assignmentVisual/src/board2.jpg");
 
 		result = new PImage(img.width, img.height);
 
