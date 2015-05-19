@@ -2,6 +2,7 @@ package cs211;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -14,6 +15,7 @@ public class ImageProcessing extends PApplet {
 	HScrollbar thresholdBarHue, thresholdBarSaturation;
 	PImage img, houghImg, result;
 	final static int HEIGHT = 600, WIDTH_IMG = 800, WIDTH_HOUGH = 600;
+	PVector rotation;
 
 	public void setup() {
 		size((2 * WIDTH_IMG + WIDTH_HOUGH) / 2, HEIGHT / 2);
@@ -87,7 +89,8 @@ public class ImageProcessing extends PApplet {
 			afterFilterQuads.clear();
 			afterFilterQuads.add(winnerQuad);
 		}
-
+		TwoDThreeD iconoclaste = new TwoDThreeD(WIDTH_IMG, HEIGHT);
+		//There is only one quad here
 		for (int[] quad : afterFilterQuads) {
 			PVector l1 = lines.get(quad[0]);
 			PVector l2 = lines.get(quad[1]);
@@ -107,6 +110,13 @@ public class ImageProcessing extends PApplet {
 			ellipse(c34.x, c34.y, 10, 10);
 			PVector c41 = intersection(l4, l1);
 			ellipse(c41.x, c41.y, 10, 10);
+			List<PVector> list = new ArrayList<PVector>(Arrays.asList(c12, c23, c34, c41));
+			
+			CWComparator.sortCorners(list);
+			println("premier corner après tri x = " + list.get(0).x);
+			
+			
+			rotation = iconoclaste.get3DRotations(list);
 			// if (QuadGraph.isConvex(l1, l2, l3, l4) && QuadGraph.validArea(l1,
 			// l2, l3, l4, 800*600, 0) &&
 			// QuadGraph.nonFlatQuad(l1, l2, l3, l4)) {
@@ -156,6 +166,9 @@ public class ImageProcessing extends PApplet {
 		image(houghImg, WIDTH_IMG, 0);
 		image(result, WIDTH_IMG + WIDTH_HOUGH, 0);
 
+		println("rotation x = " + Math.toDegrees((double) rotation.x));
+		println("rotation y = " + Math.toDegrees((double) rotation.y));
+		println("rotation z = " + Math.toDegrees((double) rotation.z));
 		// result.updatePixels();
 		noLoop(); // you must comment out noLoop()!
 	}
