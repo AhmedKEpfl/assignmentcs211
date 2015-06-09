@@ -353,7 +353,6 @@ public ArrayList<PVector> hough(PImage edgeImg) {
   }
   
   //A ajouter: filtrer si r et phi sont trop proches (Ca peut correspondre a la meme ligne)
-  for
 
   Collections.sort(bestCandidates, new HoughComparator(accumulator));
   // bestCandidates is now sorted by most voted lines.

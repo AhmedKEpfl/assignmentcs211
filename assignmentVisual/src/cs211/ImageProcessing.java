@@ -10,7 +10,6 @@ import java.util.Random;
 import processing.core.PApplet;
 import processing.core.PImage;
 import processing.core.PVector;
-import processing.video.Capture;
 import processing.video.*;
 
 public class ImageProcessing extends PApplet {
@@ -19,10 +18,10 @@ public class ImageProcessing extends PApplet {
 	PImage img, houghImg, result, imgCam;
 	final static int HEIGHT = 600, WIDTH_IMG = 800, WIDTH_HOUGH = 600;
 	PVector rotation;
-	Movie cam;
+	Movie cam = null;
 
 	public void setup() {
-		size(640, 480);
+		size(1200, 860);
 		// thresholdBarHue = new HScrollbar(this, 0, 580, 800, 20);
 		// thresholdBarSaturation = new HScrollbar(this, 0, 560, 800, 20);
 		// ...
@@ -168,7 +167,8 @@ public class ImageProcessing extends PApplet {
 */
 		
 		cam = new Movie(this, "testvideo.mp4");
-		cam.loop();
+		System.out.println(cam.duration());
+		cam.play();
 		
 		//image(houghImg, WIDTH_IMG, 0);
 		//image(result, WIDTH_IMG + WIDTH_HOUGH, 0);
@@ -185,7 +185,7 @@ public class ImageProcessing extends PApplet {
 	
 	public void draw(){ 
 		
-		image(cam, 0, 0);
+		image(cam,0,0);
 		//result = new PImage(imgCam.width, imgCam.height);
 
 		//result = sobel(gaussianBlur(detectGreen(img), 99.0f));
@@ -322,7 +322,6 @@ public class ImageProcessing extends PApplet {
 		getIntersections(lines);
 	*/
 	}
-	 
 	public void movieEvent(Movie m){
 		m.read();
 	}
