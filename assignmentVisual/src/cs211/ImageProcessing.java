@@ -10,31 +10,33 @@ import java.util.Random;
 import processing.core.PApplet;
 import processing.core.PImage;
 import processing.core.PVector;
+import processing.video.Capture;
+import processing.video.*;
 
 public class ImageProcessing extends PApplet {
+	
 	HScrollbar thresholdBarHue, thresholdBarSaturation;
-	PImage img, houghImg, result;
+	PImage img, houghImg, result, imgCam;
 	final static int HEIGHT = 600, WIDTH_IMG = 800, WIDTH_HOUGH = 600;
 	PVector rotation;
+	Movie cam;
 
 	public void setup() {
-		size((2 * WIDTH_IMG + WIDTH_HOUGH) / 2, HEIGHT / 2);
+		size(640, 480);
 		// thresholdBarHue = new HScrollbar(this, 0, 580, 800, 20);
 		// thresholdBarSaturation = new HScrollbar(this, 0, 560, 800, 20);
 		// ...
 
 		// A revoir avant d'envoyer
-		img = loadImage("board4.jpg");
-
+/*
 		result = new PImage(img.width, img.height);
 
 		result = sobel(gaussianBlur(detectGreen(img), 99.0f));
 		scale(0.5f, 0.5f);
-		image(img, 0, 0);
 
-		/*
+		
 		 * PImage afterSobel = sobel(result); image(afterSobel, 0, 0);
-		 */
+		 
 		ArrayList<PVector> lines = hough(result);
 
 		QuadGraph quadGraph = new QuadGraph();
@@ -162,20 +164,168 @@ public class ImageProcessing extends PApplet {
 		}
 
 		getIntersections(lines);
-
-		image(houghImg, WIDTH_IMG, 0);
-		image(result, WIDTH_IMG + WIDTH_HOUGH, 0);
-
+		
+*/
+		
+		cam = new Movie(this, "testvideo.mp4");
+		cam.loop();
+		
+		//image(houghImg, WIDTH_IMG, 0);
+		//image(result, WIDTH_IMG + WIDTH_HOUGH, 0);
+		//image(img, 0, 0);
+/*
 		println("rotation x = " + Math.toDegrees((double) rotation.x));
 		println("rotation y = " + Math.toDegrees((double) rotation.y));
 		println("rotation z = " + Math.toDegrees((double) rotation.z));
+		*/
 		// result.updatePixels();
-		noLoop(); // you must comment out noLoop()!
+		//noLoop(); // you must comment out noLoop()!
 	}
 
-	/*
-	 * public void draw(){ image(img, 0, 0); image(result, WIDTH_IMG, 0); }
-	 */
+	
+	public void draw(){ 
+		
+		image(cam, 0, 0);
+		//result = new PImage(imgCam.width, imgCam.height);
+
+		//result = sobel(gaussianBlur(detectGreen(img), 99.0f));
+		
+		//image(result, 0, 0);
+		
+		  
+		 
+		 
+		/*ArrayList<PVector> lines = hough(result);
+
+		QuadGraph quadGraph = new QuadGraph();
+		quadGraph.build(lines, result.width, result.height);
+		List<int[]> quads = quadGraph.findCycles();
+		List<int[]> afterFilterQuads = new ArrayList<int[]>();
+		for (int[] quad : quads) {
+			PVector l1 = lines.get(quad[0]);
+			PVector l2 = lines.get(quad[1]);
+			PVector l3 = lines.get(quad[2]);
+			PVector l4 = lines.get(quad[3]);
+
+			PVector c12 = intersection(l1, l2);
+			PVector c23 = intersection(l2, l3);
+			PVector c34 = intersection(l3, l4);
+			PVector c41 = intersection(l4, l1);
+
+			if (QuadGraph.isConvex(c12, c23, c34, c41)
+					&& QuadGraph.validArea(c12, c23, c34, c41, 2 * result.width
+							* result.height, 0)
+					&& QuadGraph.nonFlatQuad(c12, c23, c34, c41)) {
+				afterFilterQuads.add(quad);
+			}
+
+		}
+
+		if (afterFilterQuads.size() == 0 && quads.size() != 0) {
+			afterFilterQuads.add(quads.get(0));
+		} else if (afterFilterQuads.size() > 1) {
+			// We take the quad with the best angle
+			float minCos = 1.0f;
+			float tempCos = 0.0f;
+			int minIndex = 0;
+			for (int i = 0; i < afterFilterQuads.size(); i++) {
+				PVector l1 = lines.get(afterFilterQuads.get(i)[0]);
+				PVector l2 = lines.get(afterFilterQuads.get(i)[1]);
+				PVector l3 = lines.get(afterFilterQuads.get(i)[2]);
+				PVector l4 = lines.get(afterFilterQuads.get(i)[3]);
+
+				PVector c12 = intersection(l1, l2);
+				PVector c23 = intersection(l2, l3);
+				PVector c34 = intersection(l3, l4);
+				PVector c41 = intersection(l4, l1);
+				tempCos = QuadGraph.minCos(c12, c23, c34, c41);
+				if (tempCos < minCos) {
+					minCos = tempCos;
+					minIndex = i;
+				}
+			}
+			int[] winnerQuad = afterFilterQuads.get(minIndex);
+			afterFilterQuads.clear();
+			afterFilterQuads.add(winnerQuad);
+		}
+		TwoDThreeD iconoclaste = new TwoDThreeD(WIDTH_IMG, HEIGHT);
+		//There is only one quad here
+		for (int[] quad : afterFilterQuads) {
+			PVector l1 = lines.get(quad[0]);
+			PVector l2 = lines.get(quad[1]);
+			PVector l3 = lines.get(quad[2]);
+			PVector l4 = lines.get(quad[3]);
+			PVector[] linesTabel = { l1, l2, l3, l4 };
+			// (intersection() is a simplified version of the
+			// intersections() method you wrote last week, that simply
+			// return the coordinates of the intersection between 2 lines)
+			fill(255, 128, 0);
+			stroke(255, 128, 0);
+			PVector c12 = intersection(l1, l2);
+			ellipse(c12.x, c12.y, 10, 10);
+			PVector c23 = intersection(l2, l3);
+			ellipse(c23.x, c23.y, 10, 10);
+			PVector c34 = intersection(l3, l4);
+			ellipse(c34.x, c34.y, 10, 10);
+			PVector c41 = intersection(l4, l1);
+			ellipse(c41.x, c41.y, 10, 10);
+			List<PVector> list = new ArrayList<PVector>(Arrays.asList(c12, c23, c34, c41));
+			
+			CWComparator.sortCorners(list);
+			
+			
+			rotation = iconoclaste.get3DRotations(list);
+			// if (QuadGraph.isConvex(l1, l2, l3, l4) && QuadGraph.validArea(l1,
+			// l2, l3, l4, 800*600, 0) &&
+			// QuadGraph.nonFlatQuad(l1, l2, l3, l4)) {
+
+			// Choose a random, semi-transparent colour
+			Random random = new Random();
+			fill(color(min(255, random.nextInt(300)),
+					min(255, random.nextInt(300)),
+					min(255, random.nextInt(300)), 50));
+			quad(c12.x, c12.y, c23.x, c23.y, c34.x, c34.y, c41.x, c41.y);
+			
+			for (PVector line : linesTabel) {
+				float r = line.x;
+				float phi = line.y;
+				int x0 = 0;
+				int y0 = (int) (r / sin(phi));
+				int x1 = (int) (r / cos(phi));
+				int y1 = 0;
+				int x2 = result.width;
+				int y2 = (int) (-cos(phi) / sin(phi) * x2 + r / sin(phi));
+				int y3 = result.width;
+				int x3 = (int) (-(y3 - r / sin(phi)) * (sin(phi) / cos(phi)));
+				// Finally, plot the lines
+				stroke(204, 102, 0);
+				if (y0 > 0) {
+					if (x1 > 0)
+						line(x0, y0, x1, y1);
+					else if (y2 > 0)
+						line(x0, y0, x2, y2);
+					else
+						line(x0, y0, x3, y3);
+				} else {
+					if (x1 > 0) {
+						if (y2 > 0)
+							line(x1, y1, x2, y2);
+						else
+							line(x1, y1, x3, y3);
+					} else
+						line(x2, y2, x3, y3);
+				}
+			}
+			// }
+		}
+
+		getIntersections(lines);
+	*/
+	}
+	 
+	public void movieEvent(Movie m){
+		m.read();
+	}
 
 	public void changeImageMaxBright(PImage src, PImage dst) {
 		dst.loadPixels();
